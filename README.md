@@ -17,6 +17,8 @@ npm install -g kuma-cli-plugin-space
 kuma add space
 # bash与js混编，更快但兼容性未知
 kuma add space --fast
+# 删除插件
+kuma add space --del
 ```
 
 ## 使用
