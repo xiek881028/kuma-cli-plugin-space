@@ -6,9 +6,9 @@
 exports.default = new Set([
   '.js',
   '.jsx',
-  'tsx',
-  'vue',
-  'json',
+  '.tsx',
+  '.vue',
+  '.json',
   '.css',
   '.less',
   '.scss',
