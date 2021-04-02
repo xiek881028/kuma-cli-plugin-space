@@ -7,4 +7,4 @@
 #
 # To enable this hook, rename this file to "pre-commit".
 
-node node_modules/kuma-cli-plugin-space/index.js
+node node_modules/kuma-cli-plugin-space/src/index.js
