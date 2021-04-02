@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-commit".
+
+start=$(date +%s%3N)
+
+getChangehasDel() {
+  git diff --name-only HEAD --cached --diff-filter=d
+}
+
+getChange() {
+  git diff --name-only HEAD --cached
+}
+
+{
+  diff=$(getChangehasDel)
+  allDiff=$(getChange)
+} || {
+  first=$(git status --porcelain=v1)
+}
+
+if [ "${#diff}" != 0 ] || [ "${#first}" != 0 ]; then
+  node node_modules/kuma-cli-plugin-space//fast/first.js --diff="$diff" --first="$first"
+  if [ "$?" = 1 ]; then
+    exit 1
+  fi
+
+  {
+    if [ "${#first}" = 0 ]; then
+      git add $diff
+    else
+      git add $(echo $first | sed "s/A / /g")
+    fi
+  } || {
+    echo -e "\033[31mgit add失败，请手动尝试\033[0m"
+    exit 1
+  }
+
+  doneDiff=$(getChange)
+  if [ "${#doneDiff}" = 0 ] && [ $allDiff = $diff ] && [ "${#first}" = 0 ]; then
+    echo -e "\033[31m美化后代码无改动，阻止 commit\033[0m"
+    now=$(date +%s%3N)
+    echo 脚本总耗时：$((now - start))
+    exit 1
+  else
+    echo -e "\033[31m满足条件，开始 commit\033[0m"
+  fi
+
+  now=$(date +%s%3N)
+  echo 脚本总耗时：$((now - start))
+fi
