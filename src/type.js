@@ -12,6 +12,5 @@ exports.default = new Set([
   '.css',
   '.less',
   '.scss',
-  '.html',
-  '.pug',
+  '.html'
 ]);
