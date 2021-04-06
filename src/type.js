@@ -3,14 +3,14 @@
  * @author xiek
  */
 
-exports.default = new Set([
-  '.js',
-  '.jsx',
-  '.tsx',
-  '.vue',
-  '.json',
-  '.css',
-  '.less',
-  '.scss',
-  '.html'
-]);
+exports.default = [
+  '*.js',
+  '*.jsx',
+  '*.tsx',
+  '*.vue',
+  '*.json',
+  '*.css',
+  '*.less',
+  '*.scss',
+  '*.html',
+];

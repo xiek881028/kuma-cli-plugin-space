@@ -10,9 +10,9 @@ let start = now;
 const fs = require('fs-extra');
 const prettier = require('prettier');
 const pkgDir = require('pkg-dir');
+const ignore = require('ignore');
 const path = require('path');
 const execa = require('execa');
-const types = require('./type').default;
 const getChangedFiles = require('./util/getChangedFiles');
 
 const log = text => {
@@ -21,22 +21,23 @@ const log = text => {
 };
 
 (async () => {
-  console.info(`开始使用 gitPrettier 美化代码`);
+  console.info(`开始使用 kumaPrettier 美化代码`);
   const root = await pkgDir.sync();
   if (root === null) throw Error('未找到package.json，请在工程里运行插件');
   const pkg = fs.readJsonSync(path.join(root, 'package.json'));
   const opsPath = prettier.resolveConfigFile.sync();
   const prettierOps = (opsPath === null ? {} : prettier.resolveConfig.sync(opsPath)) ?? {};
-  const caihOps = pkg.gitPrettier ?? {};
+  const caihOps = pkg.kumaPrettier ?? {};
   const ops = {
     ...prettierOps,
     ...caihOps,
   };
+  const ig = ignore().add(pkg.kumaPrettierFile ?? []);
   const change = await getChangedFiles(root);
   if (change.length) {
     for (let i = 0; i < change.length; i++) {
       const el = change[i];
-      if (types.has(path.extname(el)) && fs.existsSync(el)) {
+      if (ig.ignores(el) && fs.existsSync(el)) {
         const format = prettier.format(fs.readFileSync(el, { encoding: 'utf8' }), {
           ...ops,
           filepath: el,

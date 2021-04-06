@@ -15,7 +15,7 @@ npm install -g kuma-cli-plugin-space
 
 # 完全js编写，更稳定但更慢
 kuma add space
-# bash与js混编，更快但兼容性未知
+# bash与js混编，更快但兼容性测试不充分
 kuma add space --fast
 # 删除插件
 kuma add space --del
@@ -23,11 +23,24 @@ kuma add space --del
 
 ## 使用
 
-在`package.json`里添加`gitPrettier`字段，配置项与`prettier`一致。之后向平时一样使用`git`就好。
+在`package.json`里配置`kumaPrettier`与`kumaPrettierFile`字段，`kumaPrettier`配置项与`prettier`一致。之后向平时一样使用`git`就好。
 
 ```json
-"gitPrettier": {
+// 提交美化配置，与prettier支持一致
+"kumaPrettier": {
   "tabWidth": 4
+},
+// 需要美化的文件类型，使用语法与.gitignore一致
+"kumaPrettierFile": {
+  "*.js",
+  "*.jsx",
+  "*.tsx",
+  "*.vue",
+  "*.json",
+  "*.css",
+  "*.less",
+  "*.scss",
+  "*.html"
 }
 ```
 
