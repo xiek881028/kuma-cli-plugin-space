@@ -25,7 +25,7 @@ getChange() {
 }
 
 if [ "${#diff}" != 0 ] || [ "${#first}" != 0 ]; then
-  node node_modules/kuma-cli-plugin-space/src/fast/index.js --diff="$diff" --first="$first"
+  node #relativePath# --diff="$diff" --first="$first" --packagePath="#packagePath#"
   if [ "$?" = 1 ]; then
     exit 1
   fi

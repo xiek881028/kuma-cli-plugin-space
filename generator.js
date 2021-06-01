@@ -2,12 +2,29 @@ const fs = require('fs-extra');
 const path = require('path');
 const minimist = require('minimist');
 const inquirer = require('inquirer');
+const execa = require('execa');
 const type = require('./src/type').default;
 
 module.exports = async (api, options, invoking) => {
   const { fast, del } = minimist(process.argv.slice(4));
   const cwd = api.resolve('.');
-  const hookPath = path.join(cwd, '.git/hooks', 'pre-commit');
+  let relativePath = '';
+  let gitPath = '';
+  try {
+    const { stdout } = execa.sync(
+      'git',
+      ['rev-parse', '--show-toplevel'],
+      {
+        cwd,
+      }
+    );
+    gitPath = stdout;
+    relativePath = path.relative(stdout, cwd);
+  } catch (error) {
+    api.logger.error('项目内未找到git，请初始化后再运行插件');
+    return;
+  }
+  const hookPath = path.join(gitPath, '.git/hooks', 'pre-commit');
 
   if (del) {
     fs.removeSync(hookPath);
@@ -34,8 +51,10 @@ module.exports = async (api, options, invoking) => {
     if (!api.hasProjectGit(cwd)) {
       api.logger.error('项目内未找到git，请初始化后再运行插件');
     } else {
-      // 暂时不用 husky，启动太慢了。。。有问题再说
-      fs.copyFileSync(path.join(__dirname, 'src', fast ? 'fast/' : '', 'pre-commit'), hookPath);
+      // 暂时不用 husky，在加密软件下启动太慢了。。。有问题再说
+      let preCommit = fs.readFileSync(path.join(__dirname, 'src', fast ? 'fast/' : '', 'pre-commit'), { encoding: 'utf8' }).replace('#relativePath#', path.join(relativePath, 'node_modules/kuma-cli-plugin-space/src', fast ? 'fast/index.js' : 'index.js'));
+      preCommit = preCommit.replace('#packagePath#', relativePath);
+      fs.writeFileSync(hookPath, preCommit, { encoding: 'utf8' });
       api.extendPackage({
         kumaPrettier: {},
         kumaPrettierFile: type,

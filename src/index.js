@@ -13,6 +13,7 @@ const pkgDir = require('pkg-dir');
 const ignore = require('ignore');
 const path = require('path');
 const execa = require('execa');
+const minimist = require('minimist');
 const getChangedFiles = require('./util/getChangedFiles');
 
 const log = text => {
@@ -22,7 +23,8 @@ const log = text => {
 
 (async () => {
   console.info(`开始使用 kumaPrettier 美化代码`);
-  const root = await pkgDir.sync();
+  const { packagePath } = minimist(process.argv.slice(2));
+  const root = await pkgDir.sync(packagePath);
   if (root === null) throw Error('未找到package.json，请在工程里运行插件');
   const pkg = fs.readJsonSync(path.join(root, 'package.json'));
   const opsPath = prettier.resolveConfigFile.sync();

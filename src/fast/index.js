@@ -16,7 +16,8 @@ const path = require('path');
   let now = Date.parse(new Date());
   console.info(`开始使用 kumaPrettier 美化代码`);
   console.log();
-  const root = await pkgDir.sync();
+  const { diff, first, packagePath } = minimist(process.argv.slice(2));
+  const root = await pkgDir.sync(packagePath);
   if (root === null) throw Error('未找到package.json，请在工程里运行插件');
   const pkg = fs.readJsonSync(path.join(root, 'package.json'));
   const opsPath = prettier.resolveConfigFile.sync();
@@ -27,7 +28,6 @@ const path = require('path');
     ...caihOps,
   };
   const ig = ignore().add(pkg.kumaPrettierFile ?? []);
-  const { diff, first } = minimist(process.argv.slice(2));
   let change = [];
   if (first.trim()) {
     const fileList = first.split(/\r?\n/g);
