@@ -52,8 +52,8 @@ module.exports = async (api, options, invoking) => {
       api.logger.error('项目内未找到git，请初始化后再运行插件');
     } else {
       // 暂时不用 husky，在加密软件下启动太慢了。。。有问题再说
-      let preCommit = fs.readFileSync(path.join(__dirname, 'src', fast ? 'fast/' : '', 'pre-commit'), { encoding: 'utf8' }).replace('#relativePath#', (path.join(relativePath, 'node_modules/kuma-cli-plugin-space/src', fast ? 'fast/index.js' : 'index.js')).replace('\\', '\\\\'));
-      preCommit = preCommit.replace('#packagePath#', relativePath.replace('\\', '\\\\'));
+      let preCommit = fs.readFileSync(path.join(__dirname, 'src', fast ? 'fast/' : '', 'pre-commit'), { encoding: 'utf8' }).replace('#relativePath#', (path.join(relativePath, 'node_modules/kuma-cli-plugin-space/src', fast ? 'fast/index.js' : 'index.js')).replace(/\\/g, '\\\\'));
+      preCommit = preCommit.replace('#packagePath#', relativePath.replace(/\\/g, '\\\\'));
       fs.writeFileSync(hookPath, preCommit, { encoding: 'utf8' });
       api.extendPackage({
         kumaPrettier: {},

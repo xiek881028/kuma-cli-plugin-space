@@ -1,6 +1,6 @@
 {
   "name": "kuma-cli-plugin-space",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "kuma插件包，获取采用另一份prettier配置格式化代码，以满足本地编辑的舒适度与代码提交的规范性",
   "keywords": [
     "kuma",
